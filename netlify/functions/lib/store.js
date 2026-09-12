@@ -16,7 +16,11 @@ export const ALLOWED_STATUSES = [
 ];
 
 function store() {
-  return getStore(STORE_NAME);
+  return getStore({
+    name: STORE_NAME,
+    siteID: process.env.NETLIFY_SITE_ID,
+    token: process.env.NETLIFY_AUTH_TOKEN,
+  });
 }
 
 export async function saveEnquiry(enquiry) {
