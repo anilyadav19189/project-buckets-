@@ -51,7 +51,7 @@ function buildEmailHtml(enquiry) {
 
 export async function sendEmailNotification(enquiry) {
   const apiKey = process.env.RESEND_API_KEY;
-  const toEmail = process.env.SALES_EMAIL;
+  const toEmail = (process.env.SALES_EMAIL || '').trim().replace(/['"]/g, '');
   const fromEmail =
     process.env.EMAIL_FROM || 'BUCKETS.COM Enquiries <onboarding@resend.dev>';
 
