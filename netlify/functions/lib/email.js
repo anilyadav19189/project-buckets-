@@ -51,9 +51,8 @@ function buildEmailHtml(enquiry) {
 
 export async function sendEmailNotification(enquiry) {
   const apiKey = process.env.RESEND_API_KEY;
-  const toEmail = (process.env.SALES_EMAIL || 'anilyadav19189@gmail.com').trim().toLowerCase();
-  const fromEmail =
-    process.env.EMAIL_FROM || 'BUCKETS.COM Enquiries <onboarding@resend.dev>';
+const toEmail = 'anilyadav19189@gmail.com';
+const fromEmail = 'onboarding@resend.dev';
 
   if (!apiKey || !toEmail) {
     console.warn(
@@ -71,7 +70,7 @@ export async function sendEmailNotification(enquiry) {
       },
       body: JSON.stringify({
         from: fromEmail,
-        to: toEmail,
+        to: [toEmail],
         subject: `New Commercial Enquiry — ${enquiry.companyName}`,
         html: buildEmailHtml(enquiry),
       }),
