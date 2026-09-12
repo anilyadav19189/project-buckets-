@@ -1,0 +1,9 @@
+{
+  "name": "buckets-com",
+  "private": true,
+  "type": "module",
+  "description": "BUCKETS.COM site with commercial enquiry notification system (WhatsApp + email + admin dashboard)",
+  "dependencies": {
+    "@netlify/blobs": "^11.0.3"
+  }
+}

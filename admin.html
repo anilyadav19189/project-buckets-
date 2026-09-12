@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Enquiries Admin | BUCKETS.COM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#102b37;--ink2:#193d4c;--sky:#e6f3f5;--line:#d8e4e7;--orange:#f36f21;--cream:#f8faf9;--white:#fff;--muted:#63747a;--green:#1c9a5b;--red:#c94b3a}
+  *{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Manrope,Arial,sans-serif;line-height:1.5}
+  .wrap{width:min(1180px,calc(100% - 48px));margin:auto}
+  .eyebrow{font:500 11px/1 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:var(--orange)}
+  header.top{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:#fff}
+  .brand{font-size:20px;font-weight:800;letter-spacing:-.06em}
+  .brand i{display:inline-block;width:9px;height:9px;margin-right:6px;border-radius:50%;background:var(--orange)}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:2px;padding:11px 16px;font-size:13px;font-weight:800;cursor:pointer;transition:.2s}
+  .btn-primary{background:var(--orange);color:#fff}
+  .btn-primary:hover{background:#d95312}
+  .btn-outline{border-color:#b6c7cb;color:var(--ink);background:transparent}
+  .btn-outline:hover{background:#fff}
+
+  /* Login screen */
+  #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center}
+  .login-card{width:min(380px,90vw);background:#fff;border:1px solid var(--line);padding:32px;border-radius:4px}
+  .login-card h1{font-size:1.4rem;margin:6px 0 4px;letter-spacing:-.03em}
+  .login-card p{color:var(--muted);font-size:13px;margin:0 0 22px}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
+  input,select{width:100%;border:1px solid var(--line);background:#fff;padding:12px;font:13px Manrope;border-radius:2px}
+  .error-note{color:var(--red);font-size:12px;min-height:16px;margin-top:8px}
+
+  /* Dashboard */
+  #dashboard{display:none}
+  .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:26px 0 18px;flex-wrap:wrap}
+  .toolbar h1{font-size:1.6rem;letter-spacing:-.04em;margin:0}
+  .toolbar .meta{color:var(--muted);font-size:13px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;padding-bottom:18px}
+  .filter-chip{border:1px solid var(--line);background:#fff;padding:7px 13px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;color:var(--ink2)}
+  .filter-chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .table-wrap{background:#fff;border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-bottom:60px}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:left;font:11px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:14px 16px;border-bottom:1px solid var(--line);background:#fafcfc}
+  td{padding:14px 16px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}
+  tr.is-new{background:#fff7f0}
+  tr.is-new td:first-child{box-shadow:inset 3px 0 0 var(--orange)}
+  .unread-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--orange);margin-right:8px}
+  .name-cell b{display:block}
+  .name-cell span{color:var(--muted);font-size:12px}
+  .msg-cell{max-width:220px;color:var(--muted);font-size:12px}
+  select.status-select{font-size:12px;padding:8px;font-weight:700}
+  .status-badge{display:inline-block;padding:4px 9px;border-radius:20px;font:11px 'DM Mono',monospace;font-weight:600}
+  .status-New{background:#ffe9da;color:#b34e12}
+  .status-Contacted{background:#e4eef7;color:#1f5f96}
+  .status-QuotationSent{background:#eae4f7;color:#5a3c9e}
+  .status-Negotiation{background:#fff4cc;color:#8a6d00}
+  .status-Won{background:#e1f5e9;color:#1c7a45}
+  .status-Lost{background:#f6e2e0;color:#a3392b}
+  .empty-state{padding:60px 20px;text-align:center;color:var(--muted)}
+  .refresh-note{font-size:11px;color:var(--muted)}
+  @media(max-width:900px){.table-wrap{overflow-x:auto}table{min-width:900px}}
+</style>
+</head>
+<body>
+
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="eyebrow">BUCKETS.COM</div>
+      <h1>Enquiries Admin</h1>
+      <p>Sign in to view and manage commercial enquiries.</p>
+      <form id="loginForm">
+        <div class="field"><label for="password">Password</label><input id="password" type="password" required autofocus></div>
+        <button class="btn btn-primary" type="submit" style="width:100%">Sign in</button>
+        <p class="error-note" id="loginError"></p>
+      </form>
+    </div>
+  </div>
+
+  <div id="dashboard">
+    <header class="top"><div class="wrap" style="display:flex;align-items:center;justify-content:space-between"><a class="brand" href="#"><i></i>BUCKETS.COM — ADMIN</a><button class="btn btn-outline" id="logoutBtn">Log out</button></div></header>
+    <div class="wrap">
+      <div class="toolbar">
+        <div><h1>Commercial Enquiries</h1><div class="meta" id="summaryText">Loading…</div></div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <span class="refresh-note" id="refreshNote"></span>
+          <button class="btn btn-outline" id="refreshBtn">Refresh</button>
+        </div>
+      </div>
+      <div class="filters" id="filters">
+        <button class="filter-chip active" data-status="All">All</button>
+        <button class="filter-chip" data-status="New">New</button>
+        <button class="filter-chip" data-status="Contacted">Contacted</button>
+        <button class="filter-chip" data-status="Quotation Sent">Quotation Sent</button>
+        <button class="filter-chip" data-status="Negotiation">Negotiation</button>
+        <button class="filter-chip" data-status="Won">Won</button>
+        <button class="filter-chip" data-status="Lost">Lost</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Location</th>
+              <th>Message</th>
+              <th>Received</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <div class="empty-state" id="emptyState" style="display:none">No enquiries yet.</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const STATUSES = ['New','Contacted','Quotation Sent','Negotiation','Won','Lost'];
+  const statusClass = s => 'status-' + s.replace(/\s+/g,'');
+  const tokenKey = 'buckets_admin_token';
+  let enquiries = [];
+  let activeFilter = 'All';
+
+  const loginScreen = document.getElementById('loginScreen');
+  const dashboard = document.getElementById('dashboard');
+
+  function showDashboard(){ loginScreen.style.display='none'; dashboard.style.display='block'; loadEnquiries(); }
+  function showLogin(){ dashboard.style.display='none'; loginScreen.style.display='flex'; }
+
+  async function api(path, opts={}){
+    const token = sessionStorage.getItem(tokenKey);
+    const res = await fetch('/api/' + path, {
+      ...opts,
+      headers: { 'Content-Type':'application/json', ...(token?{Authorization:'Bearer '+token}:{}), ...(opts.headers||{}) }
+    });
+    if(res.status === 401){ sessionStorage.removeItem(tokenKey); showLogin(); throw new Error('Unauthorized'); }
+    return res.json();
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const errNote = document.getElementById('loginError');
+    errNote.textContent='';
+    const password = document.getElementById('password').value;
+    try{
+      const data = await api('admin-login', { method:'POST', body: JSON.stringify({password}) });
+      if(data.ok){
+        sessionStorage.setItem(tokenKey, data.token);
+        showDashboard();
+      } else {
+        errNote.textContent = data.error || 'Incorrect password';
+      }
+    }catch(err){
+      errNote.textContent = 'Something went wrong. Please try again.';
+    }
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', ()=>{
+    sessionStorage.removeItem(tokenKey);
+    showLogin();
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click', loadEnquiries);
+
+  document.getElementById('filters').addEventListener('click', e=>{
+    const chip = e.target.closest('.filter-chip');
+    if(!chip) return;
+    document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    activeFilter = chip.dataset.status;
+    render();
+  });
+
+  async function loadEnquiries(){
+    document.getElementById('refreshNote').textContent = 'Refreshing…';
+    try{
+      const data = await api('get-enquiries');
+      if(data.ok){
+        enquiries = data.enquiries;
+        render();
+        document.getElementById('refreshNote').textContent = 'Updated ' + new Date().toLocaleTimeString();
+      }
+    }catch(err){ /* handled in api() for 401 */ }
+  }
+
+  async function updateStatus(id, status){
+    await api('update-enquiry', { method:'POST', body: JSON.stringify({id, status}) });
+    const item = enquiries.find(en=>en.id===id);
+    if(item) item.status = status;
+    render();
+  }
+
+  function render(){
+    const rows = document.getElementById('rows');
+    const list = activeFilter==='All' ? enquiries : enquiries.filter(e=>e.status===activeFilter);
+    const newCount = enquiries.filter(e=>e.status==='New').length;
+    document.getElementById('summaryText').textContent = `${enquiries.length} total enquiries · ${newCount} new`;
+    document.getElementById('emptyState').style.display = list.length ? 'none' : 'block';
+
+    rows.innerHTML = list.map(en=>{
+      const isNew = en.status==='New';
+      const date = new Date(en.createdAt);
+      return `<tr class="${isNew?'is-new':''}">
+        <td class="name-cell">${isNew?'<span class="unread-dot"></span>':''}<b>${esc(en.customerName)}</b><span>${esc(en.companyName)}</span><span>${esc(en.phone)} · ${esc(en.email)}</span></td>
+        <td>${esc(en.product)}</td>
+        <td>${esc(en.quantity)}</td>
+        <td>${esc(en.location)}</td>
+        <td class="msg-cell">${esc(en.message || '—')}</td>
+        <td>${date.toLocaleDateString()}<br>${date.toLocaleTimeString()}</td>
+        <td>
+          <span class="status-badge ${statusClass(en.status)}">${esc(en.status)}</span><br>
+          <select class="status-select" data-id="${en.id}" style="margin-top:6px">
+            ${STATUSES.map(s=>`<option value="${s}" ${s===en.status?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </td>
+      </tr>`;
+    }).join('');
+
+    rows.querySelectorAll('.status-select').forEach(sel=>{
+      sel.addEventListener('change', e=> updateStatus(e.target.dataset.id, e.target.value));
+    });
+  }
+
+  function esc(str){
+    return String(str==null?'':str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  if(sessionStorage.getItem(tokenKey)){ showDashboard(); } else { showLogin(); }
+</script>
+</body>
+</html>
